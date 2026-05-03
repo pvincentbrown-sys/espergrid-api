@@ -17,6 +17,12 @@ const skills = {
   'typeform-notion-sync': () => ({ responses_synced: 7, database_updated: true, status: 'complete' })
 };
 
+// Handle HEAD requests for preflight checks
+app.head('/api/:skill', (req, res) => {
+  if (skills[req.params.skill]) return res.sendStatus(200);
+  res.sendStatus(404);
+});
+
 app.post('/api/:skill', (req, res) => {
   const handler = skills[req.params.skill];
   if (!handler) return res.status(404).json({ error: `Skill '${req.params.skill}' not found` });
